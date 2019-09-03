@@ -171,4 +171,4 @@ prefix_statistics <- function(dataframe){ # Tener en cuenta que este dataframe q
   names(result) <- c("prefixSharePerc","maxLen","minLen","meanLen","mostShared","leastShared","meanShared","meanSeqPerGen")
   return (result)
 
-}
+} # Fin funcion
