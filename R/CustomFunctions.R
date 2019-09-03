@@ -63,11 +63,6 @@ setup_sequences <- function(sequences) {
   return (pad_sequences(to_onehot(sequences)))
 }
 
-remove_unavailables <- function(dataframe, col) { # Aparentemente no funciona bien
-  df <- dataframe[!(dataframe[,col]== "Sequence unavailable"),]
-  return (df)
-}
-
 mirror_sequences <- function(sequences){
 
   return (sapply(sequences,mirror_sequence, USE.NAMES = FALSE))
@@ -80,10 +75,7 @@ mirror_sequence <- function(sequence){
 strReverse <- function(x) sapply(lapply(strsplit(x, NULL), rev), paste,
                                  collapse="")
 
-prefix_statistics <- function(dataframe){ # Tener en cuenta que este dataframe que pasaremos será el dataframe de todas las secuencias. Todas todas.
-
-  # Después almacenar todas las j resultantes en un array, trabajar las estadísticas correspondientes al final, y devolver esos valores
-
+prefix_statistics <- function(dataframe){ # This dataframe has to contain all sequences we are working with
   members <- 0
   totals <- nrow(dataframe)
 
@@ -93,32 +85,32 @@ prefix_statistics <- function(dataframe){ # Tener en cuenta que este dataframe q
   compartidos <- NULL
   secuenciasPorGen <- NULL
 
-  # Repetimos esto mientras haya más de una secuencia en el dataframe
+  # Repeating this while there are more than one sequence in the dataframe
   while (nrow(df) > 1)
   {
-    # Seleccionar las secuencias del primer gen
+    # Selecting the sequences of the first gene
     select <- df$ensembl_gene_id == df$ensembl_gene_id[1]
     actual <- df[select,]
     df <- df[!(select),]
 
     secuenciasPorGen <- c(secuenciasPorGen,nrow(actual))
 
-    # Lo de ahora en adelante solo lo voy a hacer si hay más de una secuencia
+    # This will only be done if there is more than one sequence
     while (nrow(actual) > 1){
-      # Me saco la primera secuencia y me la llevo a otro dataframe más
+      # Extracting the first sequence and moving it to another dataframe
       temp <- actual[1,]
       actual <- actual[-1,]
 
-      # Hago lo mismo con aquellas secuencias que empiecen por el mismo caracter
+      # Doing the same with the rest of sequences that start with the same character
       charac <- substr(temp$`5utr`,1,1)
 
       samePrefix <- actual[substr(actual$`5utr`,1,1) == charac,]
       actual <- actual[!(substr(actual$`5utr`,1,1) == charac),]
       temp <- rbind(temp,samePrefix)
 
-      if (nrow(temp) > 1){ # Lo de aqui en adelante solo tiene sentido si hay más de una cadena que comparta ese comienzo de cadena
+      if (nrow(temp) > 1){ # The following will only be done if there are more than one sequence sharing the prefix
 
-        # Ahora vamos a ver la longitud de su coincidencia para ver si de verdad comparten el prefijo
+        # Checking the length of sharing to see if it is the same as the prefix
         maxlen <- min(nchar(temp$`5utr`))
 
         j <- 1
@@ -132,7 +124,7 @@ prefix_statistics <- function(dataframe){ # Tener en cuenta que este dataframe q
 
         j <- j - 1
 
-        if (j >= maxlen && nrow(temp) > 1) { # Es decir, si hemos llegado a completar alguna cadena entera, que sería considerada nuestro prefijo
+        if (j >= maxlen && nrow(temp) > 1) { # Checking if we went through a whole sequence, which will be our prefix
           members <- members + nrow(temp)
           compartidos <- c(compartidos, nrow(temp))
           longitudes <- c(longitudes, j)
@@ -142,28 +134,28 @@ prefix_statistics <- function(dataframe){ # Tener en cuenta que este dataframe q
       }
   }
 
-  # Porcentaje de secuencias que comparten prefijo
+  # Percentage of sequences sharing a prefix
   prefixSharePerc <- sum(compartidos) / totals
 
-  # Prefijo más largo
+  # Longest prefix
   maxPref <- max(longitudes)
 
-  # Prefijo más corto
+  # Shortest prefix
   minPref <- min(longitudes)
 
-  # Media de longitud de los prefijos
+  # Prefix length mean
   meanPref <- mean(longitudes)
 
-  # Prefijo más compartido
+  # Most shared prefix
   mostShared <- max(compartidos)
 
-  # Prefijo menos compartido (de entre los compartidos)
+  # Less shared prefix (from the shared prefixes of course)
   leastShared <- min(compartidos)
 
-  # Media de compartición de los prefijos
+  # Mean of sharing rate of the prefixes
   meanShared <- mean(compartidos)
 
-  # Media de secuencias que tiene un gen
+  # Mean number of sequences a gene has
   meanSeqPerGen <- mean(secuenciasPorGen)
 
 
@@ -171,4 +163,4 @@ prefix_statistics <- function(dataframe){ # Tener en cuenta que este dataframe q
   names(result) <- c("prefixSharePerc","maxLen","minLen","meanLen","mostShared","leastShared","meanShared","meanSeqPerGen")
   return (result)
 
-} # Fin funcion
+}
