@@ -38,7 +38,7 @@ padding_sequence_left <- function(sequence, len) {
 
 }
 
-to_onehot <- function(sequences){
+encode_sequence <- function(sequences){
 
   newsequences <- sapply(sequences,gsub,pattern="A",replacement="001", USE.NAMES = FALSE)
   newsequences <- sapply(newsequences,gsub,pattern="C",replacement="010", USE.NAMES = FALSE)
