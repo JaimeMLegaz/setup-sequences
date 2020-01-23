@@ -51,6 +51,19 @@ encode_sequence <- function(sequences){
 
 }
 
+to_onehot <- function(sequences){
+
+  newsequences <- sapply(sequences,gsub,pattern="A",replacement="00001", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="C",replacement="00010", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="G",replacement="00100", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="T",replacement="01000", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="X",replacement="10000", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="[^01]",replacement="W", USE.NAMES = FALSE)
+
+  return(newsequences)
+
+}
+
 padding_sequences <- function(sequences, length=250) {
   return(sapply(sequences,padding_sequence,len=length, USE.NAMES = FALSE))
 }
