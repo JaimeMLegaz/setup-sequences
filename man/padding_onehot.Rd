@@ -1,9 +1,9 @@
-\name{to_onehot}
-\alias{to_onehot}
+\name{padding_onehot}
+\alias{padding_onehot}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 %%  ~~function to do ... ~~
-to_onehot
+padding_onehot
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~

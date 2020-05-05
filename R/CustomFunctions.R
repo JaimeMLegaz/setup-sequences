@@ -20,6 +20,8 @@ padding_sequence <- function(sequence, len) {
 
 }
 
+
+
 padding_sequence_left <- function(sequence, len) {
 
   newseq <- sequence
@@ -51,7 +53,7 @@ encode_sequence <- function(sequences){
 
 }
 
-to_onehot <- function(sequences){
+padding_onehot <- function(sequences){
 
   newsequences <- sapply(sequences,gsub,pattern="A",replacement="00001", USE.NAMES = FALSE)
   newsequences <- sapply(newsequences,gsub,pattern="C",replacement="00010", USE.NAMES = FALSE)
@@ -62,6 +64,18 @@ to_onehot <- function(sequences){
 
   return(newsequences)
 
+}
+
+simple_onehot <- function(sequences){
+  
+  newsequences <- sapply(sequences,gsub,pattern="A",replacement="0001", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="C",replacement="0010", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="G",replacement="0100", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="T",replacement="1000", USE.NAMES = FALSE)
+  newsequences <- sapply(newsequences,gsub,pattern="[^01]",replacement="W", USE.NAMES = FALSE)
+  
+  return(newsequences)
+  
 }
 
 padding_sequences <- function(sequences, length=250) {
